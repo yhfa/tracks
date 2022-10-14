@@ -5,7 +5,7 @@ const signedInPages = ['/', '/playlist', '/library'];
 
 export function middleware(req: NextRequest) {
   if (signedInPages.find(page => page === req.nextUrl.pathname)) {
-    const token = req.cookies[process.env.COOKIE_NAME];
+    const token = req.cookies.get(process.env.COOKIE_NAME);
 
     if (!token) {
       const url = req.nextUrl.clone();
