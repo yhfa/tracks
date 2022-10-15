@@ -9,7 +9,7 @@ const playerLayout: FC = ({ children }) => {
         <Sidebar />
       </Box>
       <Box ml="250px" mb="100px">
-        {children}
+        <Box h="calc(100vh - 100px)">{children}</Box>
       </Box>
       <Box position="absolute" left="0" bottom="0">
         Player

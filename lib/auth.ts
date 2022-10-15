@@ -18,7 +18,9 @@ export const vaildateRoute = (handler: Handler) => {
     try {
       if (token) {
         const { id } = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
-        const user = await prisma.user.findUnique({ where: { id } });
+        const user = await prisma.user.findUnique({
+          where: { id },
+        });
 
         if (!user) {
           throw new Error('Not Vaild token!');
