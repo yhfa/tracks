@@ -26,7 +26,7 @@ const GradientLayout: FC<Props> = ({
       overflowY="auto"
       bgGradient={`linear(${color}.500 0%, ${color}.600 15%, ${color}.700 40%, rgba(0,0,0,.95)) 75%`}
     >
-      <Flex bg={`${color}.600`} p="40px" align="end">
+      <Flex bg={`${color}.600`} p="4rem" align="end">
         <Box p="20px">
           <Image
             boxSize="100px"
@@ -43,7 +43,7 @@ const GradientLayout: FC<Props> = ({
           <Text fontSize="x-small">{description}</Text>
         </Box>
       </Flex>
-      {children}
+      <Box py="50px">{children}</Box>
     </Box>
   );
 };
