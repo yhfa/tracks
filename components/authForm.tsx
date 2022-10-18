@@ -48,7 +48,7 @@ const AuthForm: FC<{ mode: 'signup' | 'signin' }> = ({ mode }) => {
               type="submit"
               bg="green.500"
               isLoading={isLoading}
-              sx={{ '&:hover': { bg: 'green.300' } }}
+              _hover={{ bg: 'green.300' }}
             >
               {mode}
             </Button>
