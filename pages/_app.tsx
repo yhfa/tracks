@@ -4,6 +4,14 @@ import 'reset-css';
 import PlayerLayout from '../components/playerLayout';
 
 const theme = extendTheme({
+  // TODO: for responsive desgin (font-size => 1rm == 10px)
+  // styles: {
+  //   global: {
+  //     html: {
+  //       fontSize: '62.5%',
+  //     },
+  //   },
+  // },
   colors: {
     gray: {
       100: '#F5F5F5',
