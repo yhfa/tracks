@@ -7,7 +7,7 @@ export const useMe = () => {
   const { data, error } = useSWR<{ user: User }>('/me', fetcher);
 
   return {
-    playlists: data?.user,
+    user: data?.user,
     error,
     isLoading: !data && !error,
   };
