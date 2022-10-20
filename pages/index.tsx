@@ -5,16 +5,21 @@ import { Image } from '@chakra-ui/react';
 
 import GradientLayout from '../components/gradientLayout';
 import prisma from '../lib/prisma';
+import { useMe } from '../hooks/me';
 
 const Home: NextPage<{ artists: Artist[] }> = ({ artists }) => {
+  const { user, isLoading } = useMe();
+
   return (
     // TODO: add custom image per user
     <GradientLayout
       color="purple"
-      image={`https://avatars.dicebear.com/api/initials/${'USER'}.svg?background=purple`}
-      title="Youssif Hany"
+      isLoading={isLoading || !user}
+      image={`https://avatars.dicebear.com/api/initials/
+      ${user?.firstName} ${user?.lastName}.svg?background=purple`}
+      title={`${user?.firstName} ${user?.lastName}`}
       subtitle="profile"
-      description="15 public playlist"
+      description={`${user?.playlistCount} public playlist`}
       roundImage
     >
       <Box color="white" px="40px">
