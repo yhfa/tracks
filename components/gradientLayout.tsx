@@ -9,7 +9,8 @@ interface Props {
   subtitle: string;
   description: string;
   roundImage: boolean;
-  isLoading: boolean;
+  // eslint-disable-next-line react/require-default-props
+  isLoading?: boolean;
 }
 
 const GradientLayout: FC<Props> = ({

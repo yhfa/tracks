@@ -53,8 +53,6 @@ const musicMenu = [
 
 const Sidebar: FC = () => {
   const { playlists } = usePlaylist();
-  console.log(playlists);
-
   return (
     <Box w="100%" h="calc(100vh - 100px)" bg="black" px="5px" color="gray">
       <Box h="100%" py="20px">
@@ -101,11 +99,17 @@ const Sidebar: FC = () => {
 
         <Box h="44%" overflowY="auto" my="10px">
           <List spacing="2">
-            {playlists.map(item => (
-              <ListItem key={item.id} px="20px" fontSize="16px">
+            {playlists.map(playlist => (
+              <ListItem key={playlist.id} px="20px" fontSize="16px">
                 <LinkBox>
-                  <Link href="/" passHref>
-                    <LinkOverlay>{item.name}</LinkOverlay>
+                  <Link
+                    href={{
+                      pathname: '/playlist/[id]',
+                      query: { id: playlist.id },
+                    }}
+                    passHref
+                  >
+                    <LinkOverlay>{playlist.name}</LinkOverlay>
                   </Link>
                 </LinkBox>
               </ListItem>
