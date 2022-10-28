@@ -36,3 +36,8 @@ export const vaildateRoute = (handler: Handler) => {
     }
   };
 };
+
+export const vaildateToken = (token: string): number => {
+  const { id } = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+  return id;
+};
