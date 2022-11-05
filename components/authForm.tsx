@@ -2,7 +2,7 @@ import { FC, FormEvent, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Box, Flex, Input, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useSWRConfig } from 'swr';
+// import { useSWRConfig } from 'swr';
 import { auth } from '../lib/mutations';
 
 const AuthForm: FC<{ mode: 'signup' | 'signin' }> = ({ mode }) => {
@@ -21,7 +21,7 @@ const AuthForm: FC<{ mode: 'signup' | 'signin' }> = ({ mode }) => {
     };
 
     try {
-      const user = await auth(mode, fromDataObj);
+      await auth(mode, fromDataObj);
       router.push('/');
     } catch (error) {
       console.error(error);

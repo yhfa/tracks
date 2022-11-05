@@ -185,6 +185,7 @@ const Player: FC<{ songs: Song[]; activeSong: Song }> = ({
           </Box>
           <Box flexBasis="80%">
             <RangeSlider
+              // eslint-disable-next-line jsx-a11y/aria-proptypes
               aria-label={['min', 'max']}
               step={0.1}
               min={0}
