@@ -22,26 +22,101 @@ import {
 } from 'react-icons/md';
 import { useStoreActions } from 'easy-peasy';
 import ReactHowler from 'react-howler';
+import { formatTime } from '../lib/formatter';
 
 const Player: FC<{ songs: Song[]; activeSong: Song }> = ({
   songs,
   activeSong,
 }) => {
   const [playing, setPlaying] = useState(true);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(
+    songs.findIndex(song => song.id === activeSong.id)
+  );
   const [seek, setSeek] = useState(0.0);
   const [repeat, setRepeat] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [duration, setDuration] = useState(0.0);
+  const [isSeeking, setIsSeeking] = useState(false);
+  const soundRef = useRef<ReactHowler>(null);
+  const repeatRef = useRef(repeat);
+  const setActiveSong = useStoreActions((state: any) => state.changeActiveSong);
+
+  useEffect(() => {
+    let timerId: number;
+    if (playing && !isSeeking) {
+      const f = () => {
+        setSeek(soundRef.current.seek());
+        timerId = requestAnimationFrame(f);
+      };
+      timerId = requestAnimationFrame(f);
+
+      return () => cancelAnimationFrame(timerId);
+    }
+
+    cancelAnimationFrame(timerId);
+  }, [isSeeking, playing]);
+
+  useEffect(() => {
+    setActiveSong(songs[index]);
+  }, [index, setActiveSong, songs]);
+
+  useEffect(() => {
+    repeatRef.current = repeat;
+  }, [repeat]);
 
   const setPlayingState = (value: boolean) => setPlaying(value);
   const toggleShuffle = () => setShuffle(state => !state);
   const toggleRepeat = () => setRepeat(state => !state);
 
+  const prevSongHandler = () => {
+    setIndex(state => {
+      // If the first song in playlist return to last song in playlist
+      return state ? state - 1 : songs.length - 1;
+    });
+  };
+
+  const nextSongHandler = () => {
+    setIndex(state => {
+      if (shuffle) {
+        const next = Math.floor(Math.random() * songs.length);
+        if (next === state) nextSongHandler();
+
+        return next;
+      }
+      // If the last song in playlist return to first song in playlist
+      return state === songs.length - 1 ? 0 : state + 1;
+    });
+  };
+
+  const onEnd = () => {
+    if (repeatRef.current) {
+      setSeek(0);
+      soundRef.current.seek(0);
+    } else {
+      nextSongHandler();
+    }
+  };
+
+  const onLoad = () => {
+    const songDuration = soundRef.current.duration();
+    setDuration(songDuration);
+  };
+
+  const onSeek = e => {
+    setSeek(parseFloat(e[0]));
+    soundRef.current.seek(e[0]);
+  };
+
   return (
     <Box>
       <Box>
-        <ReactHowler playing={playing} src={activeSong?.url} />
+        <ReactHowler
+          playing={playing}
+          src={activeSong?.url}
+          ref={soundRef}
+          onLoad={onLoad}
+          onEnd={onEnd}
+        />
       </Box>
       <Center color="gray.600">
         <ButtonGroup>
@@ -60,6 +135,7 @@ const Player: FC<{ songs: Song[]; activeSong: Song }> = ({
             variant="link"
             aria-label="Previous"
             fontSize="24px"
+            onClick={prevSongHandler}
           />
           {playing ? (
             <IconButton
@@ -88,6 +164,7 @@ const Player: FC<{ songs: Song[]; activeSong: Song }> = ({
             variant="link"
             aria-label="Next"
             fontSize="24px"
+            onClick={nextSongHandler}
           />
           <IconButton
             icon={<MdOutlineRepeat />}
@@ -104,24 +181,28 @@ const Player: FC<{ songs: Song[]; activeSong: Song }> = ({
       <Box color="gray.600">
         <Flex justify="center" align="center">
           <Box flexBasis="10%">
-            <Text fontSize="xs">1:21</Text>
+            <Text fontSize="xs">{formatTime(seek)}</Text>
           </Box>
           <Box flexBasis="80%">
             <RangeSlider
               aria-label={['min', 'max']}
               step={0.1}
               min={0}
-              max={100}
+              max={duration ? +duration.toFixed(2) : 0}
+              onChange={onSeek}
+              value={[seek]}
+              onChangeStart={() => setIsSeeking(true)}
+              onChangeEnd={() => setIsSeeking(false)}
               id="player-range"
             >
-              <RangeSliderTrack bg="gray.600">
-                <RangeSliderFilledTrack bg="gray.800" />
+              <RangeSliderTrack bg="gray.800">
+                <RangeSliderFilledTrack bg="gray.600" />
               </RangeSliderTrack>
               <RangeSliderThumb index={0} />
             </RangeSlider>
           </Box>
           <Box flexBasis="10%" textAlign="right">
-            <Text fontSize="xs">3:11</Text>
+            <Text fontSize="xs">{formatTime(duration)}</Text>
           </Box>
         </Flex>
       </Box>
