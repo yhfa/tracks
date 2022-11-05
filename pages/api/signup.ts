@@ -9,13 +9,15 @@ export default async function signup(
   res: NextApiResponse
 ) {
   const salt = bcrypt.genSaltSync();
-  const { email, password } = req.body;
+  const { email, password, firstName, lastName } = req.body;
 
   try {
     const user = await prisma.user.create({
       data: {
         email,
         password: bcrypt.hashSync(password, salt),
+        firstName,
+        lastName,
       },
     });
 
